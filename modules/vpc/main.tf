@@ -1,8 +1,8 @@
 resource "aws_vpc" "main" {
-  cidr_block           = "10.0.0.0/16"
+  cidr_block           = var.vpc_cidr
   enable_dns_support   = true
   enable_dns_hostnames = true
-  tags = { Name = "wordpress-vpc" }
+  tags = merge({ Name = "app-vpc" })
 }
 
 resource "aws_internet_gateway" "igw" {
@@ -10,18 +10,20 @@ resource "aws_internet_gateway" "igw" {
 }
 
 resource "aws_subnet" "public" {
+  for_each                = var.public_subnets
   vpc_id                  = aws_vpc.main.id
-  cidr_block              = "10.0.1.0/24"
+  cidr_block              = each.value
   map_public_ip_on_launch = true
-  availability_zone       = "us-east-1a"
-  tags = { Name = "public-subnet" }
+  availability_zone       = each.key
+  tags = merge({ Name = "public-subnet-${each.key}" })
 }
 
 resource "aws_subnet" "private" {
+  for_each          = var.private_subnets
   vpc_id            = aws_vpc.main.id
-  cidr_block        = "10.0.2.0/24"
-  availability_zone = "us-east-1b"
-  tags = { Name = "private-subnet" }
+  cidr_block        = each.value
+  availability_zone = each.key
+  tags = merge({ Name = "private-subnet-${each.key}" })
 }
 
 resource "aws_route_table" "public" {
@@ -35,18 +37,8 @@ resource "aws_route" "default_route" {
 }
 
 resource "aws_route_table_association" "public_assoc" {
-  subnet_id      = aws_subnet.public.id
+  for_each       = aws_subnet.public
+  subnet_id      = each.value.id
   route_table_id = aws_route_table.public.id
 }
 
-output "vpc_id" {
-  value = aws_vpc.main.id
-}
-
-output "public_subnet_id" {
-  value = aws_subnet.public.id
-}
-
-output "private_subnet_id" {
-  value = aws_subnet.private.id
-}

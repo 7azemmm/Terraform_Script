@@ -1,16 +1,15 @@
-variable "vpc_id" {}
-variable "private_subnet" {}
-variable "key_name" {}
-
 resource "aws_security_group" "mysql_sg" {
   vpc_id = var.vpc_id
   name   = "mysql-sg"
 
-  ingress {
-    from_port   = 3306
-    to_port     = 3306
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"] # for testing (replace with WP subnet CIDR later)
+  dynamic "ingress" {
+    for_each = toset(var.mysql_ingress_cidrs)
+    content {
+      from_port   = 3306
+      to_port     = 3306
+      protocol    = "tcp"
+      cidr_blocks = [ingress.value]
+    }
   }
 
   egress {
@@ -21,19 +20,25 @@ resource "aws_security_group" "mysql_sg" {
   }
 }
 
+data "aws_ami" "this" {
+  most_recent = true
+  owners      = var.ami_owners
+
+  filter {
+    name   = "name"
+    values = [var.ami_name_filter]
+  }
+}
+
 resource "aws_instance" "mysql" {
-  ami           = "ami-0c983657c8acbf959" # my ready sql instance AMI
-  instance_type = "t3.micro"
+  ami           = var.ami_id != null ? var.ami_id : data.aws_ami.this.id
+  instance_type = var.instance_type
   subnet_id     = var.private_subnet
   key_name      = var.key_name
   vpc_security_group_ids = [aws_security_group.mysql_sg.id]
 
 
-  tags = {
+  tags = merge({
     Name = "mysql-server"
-  }
-}
-
-output "mysql_private_ip" {
-  value = aws_instance.mysql.private_ip
+  })
 }
