@@ -52,3 +52,21 @@ variable "db_ami_id" {
   default = "ami-0c983657c8acbf959"
 }
 variable "db_ami_name_filter" { default = "*ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-*" }
+
+variable "bucket-name" {
+  description = "S3 bucket name for storing WordPress data"
+  type        = string
+  default     = "asg-task-terraform-bucket"
+}
+
+variable "lock_s3_bucket" {
+  description = "S3 bucket name for Terraform state locking"
+  type        = string
+  default     = "true"
+}
+
+variable "key_s3_bucket" {
+  description = "path within the bucket to store the state file"
+  type        = string
+  default     = "terraform.tfstate"
+}
