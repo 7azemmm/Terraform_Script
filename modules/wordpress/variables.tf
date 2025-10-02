@@ -4,6 +4,11 @@ variable "vpc_id" {
   type        = string
 }
 
+variable "public_subnet_ids" {
+  description = "List of public subnet IDs for the ALB"
+  type        = list(string)
+}
+
 variable "public_subnet" {
   description = "Public subnet ID for instances"
   type        = string
@@ -88,7 +93,7 @@ variable "asg_name" {
 variable "asg_min_size" {
   description = "Minimum size of ASG"
   type        = number
-  default     = 1
+  default     = 2
 }
 
 variable "asg_max_size" {
@@ -100,7 +105,7 @@ variable "asg_max_size" {
 variable "asg_desired_capacity" {
   description = "Desired capacity of ASG"
   type        = number
-  default     = 1
+  default     = 2
 }
 
 variable "asg_tag_name" {
@@ -141,4 +146,52 @@ variable "cooldown_period" {
 }
 
 
+# Load Balancer variables
+variable "alb_name" {
+  description = "Name of the Application Load Balancer"
+  type        = string
+  default     = "wordpress-alb"
+}
 
+variable "alb_internal" {
+  description = "Whether the ALB is internal"
+  type        = bool
+  default     = false
+}
+
+
+variable "alb_ingress_cidrs" {
+  description = "CIDR blocks allowed to access the ALB listener"
+  type        = list(string)
+  default     = ["0.0.0.0/0"]
+}
+
+variable "alb_listener_port" {
+  description = "Listener port for ALB"
+  type        = number
+  default     = 80
+}
+
+variable "alb_listener_protocol" {
+  description = "Listener protocol for ALB"
+  type        = string
+  default     = "HTTP"
+}
+
+variable "target_group_name" {
+  description = "Name of the target group"
+  type        = string
+  default     = "wordpress-tg"
+}
+
+variable "health_check_path" {
+  description = "Health check path for target group"
+  type        = string
+  default     = "/"
+}
+
+variable "health_check_matcher" {
+  description = "HTTP codes to match for healthy checks"
+  type        = string
+  default     = "200-399"
+}

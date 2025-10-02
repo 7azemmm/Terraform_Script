@@ -10,6 +10,7 @@ module "wordpress" {
   source         = "./modules/wordpress"
   vpc_id         = module.vpc.vpc_id
   public_subnet  = module.vpc.public_subnet_ids[0]
+  public_subnet_ids = module.vpc.public_subnet_ids
   key_name       = var.key_name
   instance_type  = var.wp_instance_type
   ami_id         = var.wp_ami_id
@@ -19,6 +20,11 @@ module "wordpress" {
   asg_max_size   = var.wp_asg_max_size
   asg_desired_capacity = var.wp_asg_desired_capacity
   ingress_rules  = var.wp_ingress_rules
+  alb_name       = "wordpress-alb"
+  alb_internal   = false
+  alb_ingress_cidrs = ["0.0.0.0/0"]
+  target_group_name = "wordpress-tg"
+  health_check_path = "/"
  
 }
 

@@ -1,4 +1,3 @@
-# Security Group for WordPress instances
 resource "aws_security_group" "wordpress_sg" {
   vpc_id = var.vpc_id
   name   = var.security_group_name
@@ -20,3 +19,4 @@ resource "aws_security_group" "wordpress_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
+

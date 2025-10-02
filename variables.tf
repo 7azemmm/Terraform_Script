@@ -15,12 +15,13 @@ variable "public_subnets" {
   type = map(string)
   default = {
     "us-east-1a" = "10.0.1.0/24"
+    "us-east-1b" = "10.0.2.0/24"
   }
 }
 variable "private_subnets" {
   type = map(string)
   default = {
-    "us-east-1b" = "10.0.2.0/24"
+    "us-east-1c" = "10.0.3.0/24"
   }
 }
 
@@ -34,9 +35,9 @@ variable "wp_ami_id" {
   default = "ami-045f63fff8c39e8dd" 
 }
 variable "wp_ami_name_filter" { default = "Hazem_Wordpress" }
-variable "wp_asg_min_size" { default = 1 }
+variable "wp_asg_min_size" { default = 2}
 variable "wp_asg_max_size" { default = 3 }
-variable "wp_asg_desired_capacity" { default = 1 }
+variable "wp_asg_desired_capacity" { default = 2}
 variable "wp_ingress_rules" {
   type = map(object({ from_port = number, to_port = number, protocol = string, cidr_blocks = list(string) }))
   default = {

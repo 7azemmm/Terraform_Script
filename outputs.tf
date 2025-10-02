@@ -20,3 +20,8 @@ output "mysql_private_ip" {
 output "wordpress_sg_id" {
   value = module.wordpress.wordpress_sg
 }
+
+# output "wordpress_public_ips" {
+#   description = "Public IPs of WordPress instances"
+#   value       = module.wordpress.wordpress_instance_public_ips
+# }
