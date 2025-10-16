@@ -1,4 +1,4 @@
-# Terraform WordPress Infrastructure
+# Terraform WordPress Infrastructure on AWS
 
 This Terraform project deploys a complete WordPress infrastructure on AWS using a modular approach. The infrastructure includes VPC networking, database server, WordPress application servers with auto-scaling capabilities.
 
@@ -25,20 +25,28 @@ Before you begin, ensure you have:
 ## Project Structure
 
 ```
-.
-├── main.tf                 # Root module configuration
-├── variables.tf            # Root module variables
-├── outputs.tf              # Root module outputs
-├── backend.tf              # S3 backend configuration
+├── main.tf                     # Root module configuration
+├── variables.tf                # Root module variables
+├── outputs.tf                  # Root module outputs
+├── backend.tf                  # S3 backend configuration
+├── provider.tf                 # root module for specify terraforma and aws version
 └── modules/
     ├── vpc/
-    │   ├── main.tf         # VPC, subnets, route tables, IGW
+    │   ├── main.tf             # VPC, subnets, route tables, IGW
+    │   ├── variables.tf        # Input variables for VPC module
+    │   └── outputs.tf          # Outputs for VPC module (e.g., vpc_id, subnet_ids)
+    │
     ├── db/
-    │   ├── main.tf         # EC2 instance for MySQL
+    │   ├── main.tf             # EC2 instance for MySQL
+    │   ├── variables.tf        # Input variables for DB module (e.g., instance_type, db_name)
+    │   └── outputs.tf          # Outputs for DB module (e.g., db_endpoint, db_instance_id)
+    │
     └── wordpress/
-        ├── main.tf         # Launch template, ASG, ALB
-     
+        ├── main.tf             # Launch template, ASG, ALB
+        ├── variables.tf        # Input variables for WordPress module (e.g., ami_id, instance_type)
+        └── outputs.tf          # Outputs for WordPress module (e.g., alb_dns_name, asg_name)
 ```
+
 
 ## Module Details
 
